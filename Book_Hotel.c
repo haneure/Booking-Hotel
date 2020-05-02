@@ -7,7 +7,8 @@
 #include <windows.h>
 #include <conio.h>
 
-babababa
+bananaabanananana
+
 struct bookv{           //Kedua struct ini berbeda karena kami gunakan untuk membedakan kamar hotel VIP dan Reguler
     char nama[30];      //Struct bookv untuk VIP
     char code [100];
