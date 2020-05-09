@@ -355,7 +355,7 @@ void swapv(struct bookv **a,struct bookv **b)                                   
 }
 
 
-void cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, int *nr, int *nv)            //Fungsi untuk cancel ruangan
+int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, int *nr, int *nv)            //Fungsi untuk cancel ruangan
 {
     int pilihan;
     int pilihan2;
@@ -546,86 +546,11 @@ int main(){
     int cek;
     int flag;
     int price;
-    int size;
+    int sizer = 0;
+    int sizev = 0;
+
     head = curr = NULL;         //head dan curr dimulai sebagai NULL, sebagai indikator adanya looping diawal atau tidak
     pala = ini = NULL;
-
-    FILE *fp;
-    fp = fopen("Database Reguler.txt", "r");
-    size=0;
-
-    if(fp != NULL){
-        while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
-            fflush(stdin);
-            titik = (struct bookr*)malloc(sizeof(struct bookr));
-            strcpy(titik->nama, nama);
-            titik->no = no;
-            titik->durasi = durasi;
-            titik->date = date;
-            titik->month = month;
-            titik->year = year;
-            titik->price=price;
-            strcpy(titik->kodebook, kodebook);
-            titik->next=NULL;
-            titik->prev=NULL;
-            if(pala == NULL)
-            {
-                pala=titik;
-                ekor=titik;
-            }
-            else
-            {
-                ekor->next = titik;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
-                titik->prev = ekor;
-                ekor = titik;
-                ekor->next = pala;
-                pala->prev = ekor;
-            }
-            size++;
-        }
-    }
-    else{
-        printf("Error, no file to read\n");
-    }
-    fclose(fp);
-
-    fp = fopen("Database VIP.txt", "r");
-    size=0;
-
-    if(fp != NULL){
-        while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
-            fflush(stdin);
-            node = (struct bookv*)malloc(sizeof(struct bookv));
-            strcpy(node->nama, nama);
-            node->no = no;
-            node->durasi = durasi;
-            node->date = date;
-            node->month = month;
-            node->year = year;
-            node->price=price;
-            strcpy(titik->kodebook, kodebook);
-            node->next=NULL;
-            node->prev=NULL;
-            if(head == NULL)
-            {
-                head=node;
-                tail=node;
-            }
-            else
-            {
-                tail->next = node;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
-                node->prev = tail;
-                tail = node;
-                tail->next = head;
-                head->prev = tail;
-            }
-            size++;
-        }
-    }
-    else{
-        printf("Error, no file to read\n");
-    }
-    fclose(fp);
 
     /*ini = pala;
     do
@@ -657,9 +582,34 @@ int main(){
 
     while(exit = 1){
 
+        while(sizer != 0){
+            struct bookr *temp = pala;
+            pala = pala->next;
+            pala->prev = ekor;
+            ekor->next = pala;
+            free(temp);
+            if(sizer == 1){
+                pala = NULL;
+                ekor = NULL;
+            }
+            sizer--;
+        }
+
+        while(sizev != 0){
+            struct bookv *temp = head;
+            head = head->next;
+            head->prev = tail;
+            tail->next = head;
+            free(temp);
+            if(sizev == 1){
+                head = NULL;
+                tail = NULL;
+            }
+            sizev--;
+        }
+
         FILE *fp;
         fp = fopen("Database Reguler.txt", "r");
-        size=0;
 
         if(fp != NULL){
             while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
@@ -688,7 +638,7 @@ int main(){
                     ekor->next = pala;
                     pala->prev = ekor;
                 }
-                size++;
+                sizer++;
             }
         }
         else{
@@ -696,8 +646,23 @@ int main(){
         }
         fclose(fp);
 
+        /*
+        ini = pala;
+        do
+        {
+            printf("Nama\t\t\t: %s \n", ini->nama);
+            printf("No. Kamar\t\t: %d\n", ini->no);
+            printf("Lama Menginap\t\t: %d\n", ini->durasi);
+            printf("Tanggal Check In\t: %d-%d-%d\n", ini->date, ini->month, ini->year);
+            printf("Status\t\t\t: Approved pisang\n");
+            printf("Price\t\t\t: %d\n", ini->price);
+            printf("Kode booking\t\t: %s\n\n", ini->kodebook);
+            ini = ini->next;
+        }while(ini->next != pala);
+
+        system("pause");*/
+
         fp = fopen("Database VIP.txt", "r");
-        size=0;
 
         if(fp != NULL){
             while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
@@ -710,7 +675,7 @@ int main(){
                 node->month = month;
                 node->year = year;
                 node->price=price;
-                strcpy(titik->kodebook, kodebook);
+                strcpy(node->kodebook, kodebook);
                 node->next=NULL;
                 node->prev=NULL;
                 if(head == NULL)
@@ -726,7 +691,7 @@ int main(){
                     tail->next = head;
                     head->prev = tail;
                 }
-                size++;
+                sizev++;
             }
         }
         else{
@@ -734,57 +699,20 @@ int main(){
         }
         fclose(fp);
 
-        //system("cls");
-        SetColorAndBackground(255,0);                                             //color value range 0 up-to 256
-        printf("================================================\n");             //Menu booking hotel
-        printf("               Hotel Del Luna\n ");
-        printf("================================================\n");
-        SetColorAndBackground(190,0);
-        printf("                                    ,-,-.\n");
-        printf("                                   /.( +.\\\n");
-        printf("                                   \\ {. */\n");
-        printf("                                    `-`-'\n");
-        SetColorAndBackground(255,0);
-        printf("                 _ _.-'`-._ _\n");
-        printf("                ;.'________'.;\n");
-        printf("     _________n.[____________].n_________\n");
-        printf("    |'''''''''''||==||==||==||''''''''''']\n");
-        printf("    |'''''''''' ||..||..||..||'''''''''''|\n");
-        printf("    |LI LI LI LI||LI||LI||LI||LI LI LI LI|\n");
-        printf("    |.. .. .. ..||..||..||..||.. .. .. ..|\n");
-        printf("    |LI LI LI LI||LI||LI||LI||LI LI LI LI|\n");
-        printf(" ,,;;,;;;,;;;,;;;,;;;,;;;,;;;,;;,;;;,;;;,;;,,\n\n");
-        SetColorAndBackground(151,0);
 
-        fflush(stdin);
-        if(nr==0)
+        curr = head;
+        do
         {
-            printf("Regular Room: All Available\n");
-        }else{
-            printf("Regular Room: ");
-            ini=pala;
-            for(i = 0; i < nr; i++){
-                for(i=0;i<nr;i++)
-                {
-                    printf("\nKamar %d sudah dipesan", ini->no);
-                    ini = ini->next;
-                }
-            }
+            printf("Nama\t\t\t: %s \n", curr->nama);
+            printf("No. Kamar\t\t: %d\n", curr->no);
+            printf("Lama Menginap\t\t: %d\n", curr->durasi);
+            printf("Tanggal Check In\t: %d-%d-%d\n", curr->date, curr->month, curr->year);
+            printf("Status\t\t\t: Approved pisang\n");
+            printf("Price\t\t\t: %d\n", curr->price);
+            printf("Kode booking\t\t: %s\n\n", curr->kodebook);
+            curr = curr->next;
+        }while(curr->next != head);
 
-        }
-
-        if(nv==0)
-        {
-            printf("\n\nVIP Room : All Available\n");
-        }else{
-            printf("\nVIP Room: ");
-            curr=head;
-            for(i=0;i<nv;i++)
-            {
-                printf("\nKamar %d sudah dipesan", curr->no);
-                curr = curr->next;
-            }
-        }
 
         printf("\n\n");
         printf("Harga kamar VIP: Rp. 600.000 / hari\n");
