@@ -8,6 +8,7 @@
 #include <conio.h>
 
 
+
 struct bookv{           //Kedua struct ini berbeda karena kami gunakan untuk membedakan kamar hotel VIP dan Reguler
     char nama[30];      //Struct bookv untuk VIP
     char code [100];
@@ -96,6 +97,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
             if(montho>12)                       //If ini untuk menyeseuaikan agar bulan tidak lebih dari 12 bulan
             {fflush(stdin);
                 montho -= 12;
+
                 yearo++;                        //Jika bulan lebih dari 12, maka artinya 1 tahun, tahun di++
             }
         }
