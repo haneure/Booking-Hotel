@@ -111,7 +111,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
         }
 
         FILE *fp = fopen("Database Reguler.txt", "a");                                      //ini File Processingnya
-        fprintf(fp, "#%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
+        fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
         fclose(fp);
 
         if(*pala != NULL)       //selama pala masi ada isi, programnya lanjut
