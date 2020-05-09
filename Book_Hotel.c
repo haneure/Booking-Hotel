@@ -111,7 +111,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
         }
 
         FILE *fp = fopen("Database Reguler.txt", "a");                                      //ini File Processingnya
-        fprintf(fp, "#%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
+        fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
         fclose(fp);
 
         if(*pala != NULL)       //selama pala masi ada isi, programnya lanjut
@@ -557,10 +557,14 @@ int main(){
     size=0;
 
     if(fp != NULL){
-        while(fscanf(fp, "%[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
+        while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, &kodebook) !=  EOF){
             fflush(stdin);
             titik = (struct bookr*)malloc(sizeof(struct bookr));
+
             strcpy(titik->nama, nama);
+            printf("nama bukan linkes list = %s\n", nama);
+            printf("nama: %s\n", titik->nama);
+            system("pause");
             titik->no = no;
             titik->durasi = durasi;
             titik->date = date;
@@ -572,16 +576,16 @@ int main(){
             if(pala == NULL)
             {
                 pala=titik;
+                ekor = titik;
             }
             else
             {
-                ini=pala;
-                while(ini->next != NULL)
-                {
-                    ini = ini->next;
-                }
-                ini->next=titik;
+                ekor->next = titik;
+                titik->prev = ekor;
+                ekor = titik;
             }
+            ekor->next = pala;
+            pala->prev = ekor;
             size++;
         }
     }
@@ -591,8 +595,8 @@ int main(){
     fclose(fp);
 
     ini = pala;
-    while(ini != NULL){
-        printf("Nama\t: %-30s \n", ini->nama);
+    while(ini->next != pala){
+        printf("Nama\t: %s \n", ini->nama);
         printf("No. Kamar\t: %d\n", ini->no);
         printf("Lama Menginap\t: %d\n", ini->durasi);
         printf("Tanggal Check In\t: %d-%d-%d\n", ini->date, ini->month, ini->year);
@@ -608,7 +612,7 @@ int main(){
 
 
 
-        //system("cls");
+        system("cls");
         SetColorAndBackground(255,0);                                             //color value range 0 up-to 256
         printf("================================================\n");             //Menu booking hotel
         printf("               Hotel Del Luna\n ");
