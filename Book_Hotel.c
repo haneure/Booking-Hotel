@@ -546,17 +546,18 @@ int main(){
     int cek;
     int flag;
     int price;
+    int size;
     head = curr = NULL;         //head dan curr dimulai sebagai NULL, sebagai indikator adanya looping diawal atau tidak
     pala = ini = NULL;
 
-    FILE *fp;
-    fp = fopen("Database Reguler", "r");
-    int size=0;
+    printf("tes\n\n");
 
-    if(fp != NULL)
-    {
-        while(fscanf(fp, "#%s#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, &kodebook)!= EOF)
-        {
+    FILE *fp;
+    fp = fopen("Database Reguler.txt", "r");
+    size=0;
+
+    if(fp != NULL){
+        while(fscanf(fp, "%[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
             fflush(stdin);
             titik = (struct bookr*)malloc(sizeof(struct bookr));
             strcpy(titik->nama, nama);
@@ -568,7 +569,7 @@ int main(){
             titik->price=price;
             strcpy(titik->kodebook, kodebook);
             titik->next=NULL;
-            if(pala==NULL)
+            if(pala == NULL)
             {
                 pala=titik;
             }
@@ -584,12 +585,30 @@ int main(){
             size++;
         }
     }
-    else{}
+    else{
+        printf("Error, no file to read\n");
+    }
     fclose(fp);
+
+    ini = pala;
+    while(ini != NULL){
+        printf("Nama\t: %-30s \n", ini->nama);
+        printf("No. Kamar\t: %d\n", ini->no);
+        printf("Lama Menginap\t: %d\n", ini->durasi);
+        printf("Tanggal Check In\t: %d-%d-%d\n", ini->date, ini->month, ini->year);
+        printf("Status\t: Approved pisang\n");
+        printf("Price: %d\n", ini->price);
+        printf("Kode booking: %s\n\n", ini->kodebook);
+        ini = ini->next;
+    }
+    system("pause");
 
 
     while(exit = 1){
-        system("cls");
+
+
+
+        //system("cls");
         SetColorAndBackground(255,0);                                             //color value range 0 up-to 256
         printf("================================================\n");             //Menu booking hotel
         printf("               Hotel Del Luna\n ");
