@@ -528,10 +528,13 @@ int main(){
     struct bookr *pala, *titik, *ini, *ekor;
 
     char nama[30];
-    char tipe[5];
+    char kodebook[10];
     int no;
     int durasi;
     int date;
+    int month;
+    int year;
+    char tipe[5];
     int code;
     char status[30];
     int choice;
@@ -542,9 +545,47 @@ int main(){
     int pilihan;
     int cek;
     int flag;
-    //int price;
+    int price;
     head = curr = NULL;         //head dan curr dimulai sebagai NULL, sebagai indikator adanya looping diawal atau tidak
     pala = ini = NULL;
+
+    FILE *fp;
+    fp = fopen("Database Reguler", "r");
+    int size=0;
+
+    if(fp != NULL)
+    {
+        while(fscanf(fp, "#%s#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, &kodebook)!= EOF)
+        {
+            fflush(stdin);
+            titik = (struct bookr*)malloc(sizeof(struct bookr));
+            strcpy(titik->nama, nama);
+            titik->no = no;
+            titik->durasi = durasi;
+            titik->date = date;
+            titik->month = month;
+            titik->year = year;
+            titik->price=price;
+            strcpy(titik->kodebook, kodebook);
+            titik->next=NULL;
+            if(pala==NULL)
+            {
+                pala=titik;
+            }
+            else
+            {
+                ini=pala;
+                while(ini->next != NULL)
+                {
+                    ini = ini->next;
+                }
+                ini->next=titik;
+            }
+            size++;
+        }
+    }
+    else{}
+    fclose(fp);
 
 
     while(exit = 1){
