@@ -111,7 +111,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
         }
 
         FILE *fp = fopen("Database Reguler.txt", "a");                                      //ini File Processingnya
-        fprintf(fp, "#%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
+        fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
         fclose(fp);
 
         if(*pala != NULL)       //selama pala masi ada isi, programnya lanjut
@@ -550,82 +550,7 @@ int main(){
     head = curr = NULL;         //head dan curr dimulai sebagai NULL, sebagai indikator adanya looping diawal atau tidak
     pala = ini = NULL;
 
-    FILE *fp;
-    fp = fopen("Database Reguler.txt", "r");
-    size=0;
 
-    if(fp != NULL){
-        while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
-            fflush(stdin);
-            titik = (struct bookr*)malloc(sizeof(struct bookr));
-            strcpy(titik->nama, nama);
-            titik->no = no;
-            titik->durasi = durasi;
-            titik->date = date;
-            titik->month = month;
-            titik->year = year;
-            titik->price=price;
-            strcpy(titik->kodebook, kodebook);
-            titik->next=NULL;
-            titik->prev=NULL;
-            if(pala == NULL)
-            {
-                pala=titik;
-                ekor=titik;
-            }
-            else
-            {
-                ekor->next = titik;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
-                titik->prev = ekor;
-                ekor = titik;
-                ekor->next = pala;
-                pala->prev = ekor;
-            }
-            size++;
-        }
-    }
-    else{
-        printf("Error, no file to read\n");
-    }
-    fclose(fp);
-
-    fp = fopen("Database VIP.txt", "r");
-    size=0;
-
-    if(fp != NULL){
-        while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
-            fflush(stdin);
-            node = (struct bookv*)malloc(sizeof(struct bookv));
-            strcpy(node->nama, nama);
-            node->no = no;
-            node->durasi = durasi;
-            node->date = date;
-            node->month = month;
-            node->year = year;
-            node->price=price;
-            strcpy(titik->kodebook, kodebook);
-            node->next=NULL;
-            node->prev=NULL;
-            if(head == NULL)
-            {
-                head=node;
-                tail=node;
-            }
-            else
-            {
-                tail->next = node;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
-                node->prev = tail;
-                tail = node;
-                tail->next = head;
-                head->prev = tail;
-            }
-            size++;
-        }
-    }
-    else{
-        printf("Error, no file to read\n");
-    }
-    fclose(fp);
 
     /*ini = pala;
     do
@@ -657,7 +582,96 @@ int main(){
 
     while(exit = 1){
 
+        while(pala != NULL){
+            struct mhs *temp;
+            temp = pala;
+            pala = pala -> next;
+            free(temp);
+        }
 
+        while(head != NULL){
+            struct mhs *tmp;
+            tmp = head;
+            head = head -> next;
+            free(tmp);
+        }
+
+        FILE *fp;
+        fp = fopen("Database Reguler.txt", "r");
+        size=0;
+
+        if(fp != NULL){
+            while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
+                fflush(stdin);
+                titik = (struct bookr*)malloc(sizeof(struct bookr));
+                strcpy(titik->nama, nama);
+                titik->no = no;
+                titik->durasi = durasi;
+                titik->date = date;
+                titik->month = month;
+                titik->year = year;
+                titik->price=price;
+                strcpy(titik->kodebook, kodebook);
+                titik->next=NULL;
+                titik->prev=NULL;
+                if(pala == NULL)
+                {
+                    pala=titik;
+                    ekor=titik;
+                }
+                else
+                {
+                    ekor->next = titik;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
+                    titik->prev = ekor;
+                    ekor = titik;
+                    ekor->next = pala;
+                    pala->prev = ekor;
+                }
+                size++;
+            }
+        }
+        else{
+            printf("Error, no file to read\n");
+        }
+        fclose(fp);
+
+        fp = fopen("Database VIP.txt", "r");
+        size=0;
+
+        if(fp != NULL){
+            while(fscanf(fp, " %[^#]#%d#%d#%d-%d-%d-Rp.%d-%[^\n]", &nama, &no, &durasi, &date, &month, &year, &price, kodebook) !=  EOF){
+                fflush(stdin);
+                node = (struct bookv*)malloc(sizeof(struct bookv));
+                strcpy(node->nama, nama);
+                node->no = no;
+                node->durasi = durasi;
+                node->date = date;
+                node->month = month;
+                node->year = year;
+                node->price=price;
+                strcpy(titik->kodebook, kodebook);
+                node->next=NULL;
+                node->prev=NULL;
+                if(head == NULL)
+                {
+                    head=node;
+                    tail=node;
+                }
+                else
+                {
+                    tail->next = node;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
+                    node->prev = tail;
+                    tail = node;
+                    tail->next = head;
+                    head->prev = tail;
+                }
+                size++;
+            }
+        }
+        else{
+            printf("Error, no file to read\n");
+        }
+        fclose(fp);
 
         //system("cls");
         SetColorAndBackground(255,0);                                             //color value range 0 up-to 256
@@ -767,7 +781,7 @@ int main(){
                         printf("Kamar Reguler\n");                                                  //print data yang sudah di sort.
                         printf("Nomor: %d\n",ini->no);
                         printf("Nama: %s\n",ini->nama);
-                        printf("Tanggal Peminjaman: %d,%d,%d\n",ini->date,ini->month,ini->year);
+                        printf("Tanggal Peminjaman: %d-%d-%d\n",ini->date,ini->month,ini->year);
                         printf("Durasi: %d hari\n",ini->durasi);
                         printf("Price : Rp. %d\n", ini->price);
                         printf("Menu:\n");
@@ -816,7 +830,7 @@ int main(){
                         printf("Kamar Reguler\n");                                                  //print data yang sudah di sort.
                         printf("Nomor: %d\n",curr->no);
                         printf("Nama: %s\n",curr->nama);
-                        printf("Tanggal Peminjaman: %d,%d,%d\n",curr->date,curr->month,curr->year);
+                        printf("Tanggal Peminjaman: %d-%d-%d\n",curr->date,curr->month,curr->year);
                         printf("Durasi: %d hari\n",curr->durasi);
                         printf("Price : Rp. %d\n", curr->price);
                         printf("Menu:\n");
