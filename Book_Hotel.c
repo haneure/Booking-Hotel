@@ -813,7 +813,7 @@ int main(){
                     do
                     {
                         system("cls");
-                        printf("Kamar Reguler\n");                                                  //print data yang sudah di sort.
+                        printf("Kamar VIP\n");                                                  //print data yang sudah di sort.
                         printf("Nomor: %d\n",curr->no);
                         printf("Nama: %s\n",curr->nama);
                         printf("Tanggal Peminjaman: %d,%d,%d\n",curr->date,curr->month,curr->year);
