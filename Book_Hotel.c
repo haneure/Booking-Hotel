@@ -365,6 +365,7 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
     struct bookv *temp;
     struct bookr *titik;
     struct bookv *node;
+    FILE *fp;
     fflush(stdin);
     system("cls");
     printf("Tipe kamar: \n");
@@ -409,17 +410,21 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     printf("Masukkan kode booking anda sebagai sistem pengaman: ");
                     //printf("\ncheat code: %s\n", (*ini)->kodebook);
                     scanf("%s", &password);
-                    ini = pala;
+                    //ini = pala;
                     if(strcmp((*ini)->kodebook, password)== 0) //Pengecekan kode booking untuk membatalkan booking agar yang bisa membatalkan hanya yang memesan
                     {
-                        FILE *fp;
+
                         fp = fopen("Database Reguler.txt", "w");
                         struct bookr *temp = (*ini);
-                        printf("tes\n");
                         (*ini) = (*ini)->next;
 
                         while((*ini) != temp){
-                            if(strcmp(temp->nama, (*ini)->nama) == 1){
+                            printf("temp = %s\n", temp->nama);
+                            printf("ini = %s\n", (*ini)->nama);
+                            system("pause");
+                            if(strcmp(temp->nama, (*ini)->nama) == 0){
+                                (*ini) = (*ini);
+                            } else{
                                 fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*ini)->nama, (*ini)->no, (*ini)->durasi, (*ini)->date, (*ini)->month, (*ini)->year, (*ini)->price, (*ini)->kodebook);
                             }
                             (*ini) = (*ini)->next;
@@ -473,19 +478,21 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                 if(pilihan3=='Y' || pilihan3=='y')
                 {
                     printf("Masukkan kode booking anda sebagai sistem pengaman: ");
-                    //printf("\ncheat code: %s\n", (*curr)->kodebook);
-                    scanf("%s", &password);
-
+                    printf("\ncheat code: %s\n", (*curr)->kodebook);
+                    scanf("%s", &password);fflush(stdin);
                     if(strcmp((*curr)->kodebook, password)== 0)    //Pengecekan kode booking untuk membatalkan booking agar yang bisa membatalkan hanya yang memesan
                     {
-                        FILE *fp;
-                        fp = fopen("Database VIP.txt", "w");
+                        //FILE *fp;
+                        fp = fopen ("Database VIP.txt", "w");
                         struct bookv *temp = (*curr);
-                        printf("tes\n");
                         (*curr) = (*curr)->next;
 
                         while((*curr) != temp){
-                            if(strcmp(temp->nama, (*curr)->nama) == 1){
+                            printf("%s == %s\n\n", temp->nama, (*curr)->nama);
+                            system("pause");
+                            if(strcmp(temp->nama,(*curr)->nama) == 0){
+                                (*curr) = (*curr);
+                            } else{
                                 fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*curr)->nama, (*curr)->no, (*curr)->durasi, (*curr)->date, (*curr)->month, (*curr)->year, (*curr)->price, (*curr)->kodebook);
                             }
                             (*curr) = (*curr)->next;
@@ -495,7 +502,6 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
 
                     }else{
                         printf("Kode booking yang anda masukkan salah");
-                        system("pause");
                         break;
                     }
                 }else{
@@ -641,7 +647,7 @@ int main(){
         }
         fclose(fp);
 
-
+        /*
         ini = pala;
         do
         {
@@ -655,7 +661,7 @@ int main(){
             ini = ini->next;
         }while(ini->next != pala);
 
-        system("pause");
+        system("pause");*/
 
         fp = fopen("Database VIP.txt", "r");
 
@@ -694,9 +700,20 @@ int main(){
         }
         fclose(fp);
 
-        /*
+
         curr = head;
-        do
+        for(i = 0; i < sizev; i++){
+            printf("Nama\t\t\t: %s \n", curr->nama);
+            printf("No. Kamar\t\t: %d\n", curr->no);
+            printf("Lama Menginap\t\t: %d\n", curr->durasi);
+            printf("Tanggal Check In\t: %d-%d-%d\n", curr->date, curr->month, curr->year);
+            printf("Status\t\t\t: Approved pisang\n");
+            printf("Price\t\t\t: %d\n", curr->price);
+            printf("Kode booking\t\t: %s\n\n", curr->kodebook);
+            curr = curr->next;
+        }
+        /*
+        while(curr->next != head)
         {
             printf("Nama\t\t\t: %s \n", curr->nama);
             printf("No. Kamar\t\t: %d\n", curr->no);
@@ -706,8 +723,10 @@ int main(){
             printf("Price\t\t\t: %d\n", curr->price);
             printf("Kode booking\t\t: %s\n\n", curr->kodebook);
             curr = curr->next;
-        }while(curr->next != head);
+        }
         */
+        system("pause");
+
         printf("\n\n");
         printf("Harga kamar VIP: Rp. 600.000 / hari\n");
         printf("Harga kamar Reguler: Rp. 300.000 / hari\n\n\n");
@@ -715,22 +734,22 @@ int main(){
         ini = pala;
         if(sizer != 0){
             printf("Kamar Reguler: \n");
-            do
+            for(i = 0; i < sizer; i++)
             {
                 printf("No. Kamar\t\t: %d sudah dipesan\n", ini->no);
                 ini = ini->next;
-            }while(ini->next != pala);
+            }
         }else{
             printf("All Reguler Room avaiable\n");
         }
 
         curr = head;
-        if(sizer != 0){
+        if(sizev != 0){
             printf("Kamar VIP: \n");
-            do{
+            for(i = 0; i < sizev; i++){
                 printf("No. Kamar\t\t: %d sudah dipesan\n", curr->no);
                 curr = curr->next;
-            }while(curr->next != head);
+            }
         }else{
             printf("All VIP Room Avaiable\n");
         }
