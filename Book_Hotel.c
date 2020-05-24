@@ -45,7 +45,88 @@ struct bookr{
 
 }bookr;
 
+struct Qnode{
+    char nama[30];
+    char stat[15];
+    int nokamar;
+    int durasi;
+    int date;
+    int month;
+    int year;
+    int dateo;
+    int montho;
+    int yearo;
+    int price;
+    char kodebook[10];
 
+    struct Qnode* next;
+
+};
+
+struct Queue
+{
+    struct Qnode *front, *rear;
+};
+
+struct Qnode *newNode (char nama[30],char stat[],int nokamar,int durasi,int date,int month,int year,int dateo,int montho,int yearo,int price,char kodebook[10])
+{
+    struct Qnode *temp = (struct Qnode*)malloc(sizeof(struct Qnode));
+    strcpy(temp->nama, nama);
+    strcpy(temp->stat, "Unapproved");
+    temp->nokamar = nokamar;
+    temp->durasi = durasi;
+    temp->date = date;
+    temp->month = month;
+    temp->year = year;
+    temp->dateo = dateo;
+    temp->montho = montho;
+    temp->yearo = yearo;
+    temp->price = price;
+    strcpy(temp->kodebook, kodebook);
+
+    temp->next = NULL;
+    return temp;
+};
+
+struct Queue* CreateQueue()
+{
+    struct Queue* q = (struct Queue*)malloc(sizeof(struct Queue));
+    q->front = q->rear = NULL;
+    return q;
+};
+
+void enqueue(struct Queue* q, char nama[30],char stat[],int nokamar,int durasi,int date,int month,int year,int dateo,int *montho,int yearo,int price,char kodebook[10])
+{
+    struct Qnode *temp = newNode(nama, stat, nokamar, durasi, date, month, year, dateo, montho, yearo, price, kodebook);
+
+    if(q->rear==NULL)
+    {
+        q->front = q->rear = temp;
+        return;
+    }
+
+    q->rear->next = temp;
+    q->rear = temp;
+}
+
+void dequeue(struct Queue* q)
+{
+    if(q->front ==  NULL)
+    {
+        return;
+    }
+
+    struct Qnode* temp= q-> front;
+
+    q->front = q->front->next;
+
+    if(q->front==NULL)
+    {
+        q->rear=NULL;
+    }
+
+    free(temp);
+}
 
 void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, struct bookr **titik, struct bookv **node, int *choice)
 {
@@ -67,6 +148,9 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
     srand((unsigned int)(time(NULL)));
     char pass[6];
     char password[10];
+    char stat[15];
+    strcpy(stat, "Unapproved");
+    struct Queue* q= CreateQueue();
 
     system("cls");
     printf("Pilih Tipe Kamar : \n");                    //Kami memisahkan menu ruang reguler dan VIP, agar memisahkan insert data ke booking VIP dan booking Reguler.
@@ -110,73 +194,25 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
             sprintf(kodebook, "REG-%d%c%c", pass[i], pass[i+2], pass[i + 3]);
         }
 
-        FILE *fp = fopen("Database Reguler.txt", "a");                                      //ini File Processingnya
-        fprintf(fp, "#%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricer, kodebook);
-        fclose(fp);
-
-        if(*pala != NULL)       //selama pala masi ada isi, programnya lanjut
-        {
-            *ini = *pala;       //sebaga variabel untuk membuat ini sebagai head, dan head tetap diam sebagai data pertama
-            do{
-                if(nokamar == (*ini)->no){                                          //Fungsi untuk check apakaha ada booking di ruang yang sama dan tanggal yang sama atau tidak.
-                    if(date < (*ini)->dateo && date > (*ini)->date){               //Agar tidak ada tanggal booking yang bertabrakan
-                        if(month == (*ini)->montho){
-                            if(year == (*ini)->yearo){
-                                sama = 1;
-                                *choice =0;
-                            }
-                        }
-                    }
-                }
-               *ini = (*ini)->next;             //ini = ini -> next agar lanjut ke data selanjutnya
-            }while(*ini != *pala);
-        }
-        if(sama != 1)
-        {
-            *titik = (struct bookr*)malloc(sizeof(struct bookr));                   //memory alloc bookr
-            strcpy((*titik)->nama, nama);
-            (*titik)->no = nokamar;
-            (*titik)->durasi = durasi;
-            (*titik)->date = date;
-            (*titik)->month = month;
-            (*titik)->year = year;
-            (*titik)->prev = NULL;
-            (*titik)->next = NULL;
-            (*titik)->dateo = dateo;
-            (*titik)->montho = montho;
-            (*titik)->yearo = yearo;
-            (*titik) -> price = pricer * durasi;
-            strcpy((*titik)->kodebook, kodebook);
-
-            if(*pala == NULL)
-            {
-                *pala = *titik;                 //jika pala masih kosong, isi pala dan ekor dengan titik.
-                *ekor = *titik;
-            }
-            else
-            {
-                (*ekor)->next = *titik;             //Data dilanjutkan secara Doubly linked list, dengan membuat ekor->next = titik dan titik->prev = ekor
-                (*titik)->prev = *ekor;
-                *ekor = *titik;
-            }
-            printf("Please wait . . . connecting to server\n");
-            Sleep(1000);
-            printf("\nData peminjaman ruangan telah berhasil diinput dengan status Approved\n");    //Jika berhasil diinput, print ini.
-            printf("Harga kamar : Rp. %d (%d hari)\n", (*titik)->price, (*titik)->durasi);
-            printf("Mohon jangan lupa dengan Kode Boking anda, kode booking anda adalah: %s\n\n", (*titik)->kodebook);
-            (*ekor)->next = *pala;
-            (*pala)->prev = *ekor;
-        }
-        else
-        {
-            printf("Kamar sudah di reservasi oleh orang lain\n");             //Jika sama == 1/ ada yang bertabrakan tanggal bookingnya.
-           // choice = 0;
-        }
-
-        *ini = (*pala)->next;
 
 
+
+        enqueue(q, nama, stat, nokamar, durasi, date, month, year, dateo, montho, yearo, pricer, kodebook);
+        printf("Queue front = %s\n", q->front->nama);
+        printf("Queue front no = %d\n", q->front->nokamar);
+        printf("Queue front durasi= %d\n", q->front->durasi);
+        printf("Queue front date= %d\n", q->front->date);
+        printf("Queue front month= %d\n", q->front->month);
+        printf("Queue front year= %d\n", q->front->year);
+        printf("Queue front dateo= %d\n", q->front->dateo);
+        printf("Queue front montho= %d\n", q->front->montho);
+        printf("Queue front yearo= %d\n", q->front->yearo);
+        printf("Queue front price= %d\n", q->front->price);
+        printf("Queue front kdoebook= %s\n", q->front->kodebook);
+        printf("Queue front stat= %s\n", q->front->stat);
         system("pause");
+
+
 
     }
     else if(*choice==2)                                                     //Menu untuk ruang booking VIP
@@ -218,71 +254,19 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
             sprintf(kodebook, "VIP-%d%c%c", pass[i], pass[i+2], pass[i + 3]);
         }
 
-        FILE *fp = fopen("Database VIP.txt", "a");          // file processingnya
-        fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", nama, nokamar, durasi, date, month, year, pricev, kodebook);
-        fclose(fp);
-
-        if(*head != NULL)
-        {
-            *curr = *head;
-            do{
-                if(nokamar == (*curr)->no){                                         // cek ada tanggal booking yang bertabrakan atau tidak
-                    if(date < (*curr)->dateo && date > (*curr)->date){
-                        if(month == (*curr)->montho){
-                            if(year == (*curr)->yearo){
-                                sama = 1;
-                                *choice=0;
-                            }
-                        }
-
-                    }
-                }
-               *curr = (*curr)->next;
-            }while(*curr != *head);
-        }
-        if(sama != 1)
-        {
-            *node = (struct bookv*)malloc(sizeof(struct bookv));                            //Memory alloc struct bookv.
-            strcpy((*node)->nama, nama);
-            (*node)->no = nokamar;
-            (*node)->durasi = durasi;
-            (*node)->date = date;
-            (*node)->month = month;
-            (*node)->year = year;
-            (*node)->prev = NULL;
-            (*node)->next = NULL;
-            (*node)->dateo = dateo;
-            (*node)->montho = montho;
-            (*node)->yearo = yearo;
-            (*node) -> price = pricev * durasi;
-            strcpy((*node)->kodebook , kodebook);
-
-            if(*head == NULL)
-            {
-                *head = *node;
-                *tail = *node;
-            }
-            else
-            {
-                (*tail)->next = *node;
-                (*node)->prev = *tail;
-                *tail = *node;
-            }
-            printf("Please wait . . . connecting to server\n");
-            Sleep(1000);
-            printf("\nData peminjaman ruangan telah berhasil diinput dengan status Approved\n");
-            printf("Harga kamar : Rp. %d\n\n", (*node)->price);
-            printf("Mohon jangan lupa dengan Kode Boking anda, kode booking anda adalah: %s\n\n", (*node)->kodebook);
-            (*tail)->next = *head;
-            (*head)->prev = *tail;
-
-        }
-        else
-        {
-            printf("Kamar sudah di reservasi oleh orang lain\n");
-        }
-
-        *curr = (*head)->next;
+        enqueue(q, &nama, &stat, nokamar, durasi, date, month, year, dateo, montho, yearo, pricev, kodebook);
+        printf("Queue front = %s\n", q->front->nama);
+        printf("Queue front no = %d\n", q->front->nokamar);
+        printf("Queue front durasi= %d\n", q->front->durasi);
+        printf("Queue front date= %d\n", q->front->date);
+        printf("Queue front month= %d\n", q->front->month);
+        printf("Queue front year= %d\n", q->front->year);
+        printf("Queue front dateo= %d\n", q->front->dateo);
+        printf("Queue front montho= %d\n", q->front->montho);
+        printf("Queue front yearo= %d\n", q->front->yearo);
+        printf("Queue front price= %d\n", q->front->price);
+        printf("Queue front kodebook= %s\n", q->front->kodebook);
+        printf("Queue front stat= %s\n", q->front->stat);
         system("pause");
     }
 }
@@ -353,7 +337,6 @@ void swapv(struct bookv **a,struct bookv **b)                                   
     (*b)->price = bil5;
 
 }
-
 
 int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, int *nr, int *nv)            //Fungsi untuk cancel ruangan
 {
@@ -514,6 +497,13 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
 
         }
     }
+}
+
+void approval(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, struct bookr **titik, struct bookv **node, int *choice)
+{
+    struct Queue* temp = (struct Queue*)malloc(sizeof(struct Queue));
+    printf("Nama\t\t : %s\n", Queue->front->nama);
+    system("pause");
 }
 
 void SetColorAndBackground(int ForgC, int BackC)
@@ -759,7 +749,8 @@ int main(){
         printf("1. Input\n");
         printf("2. check\n");
         printf("3. cancel\n");
-        printf("4. Exit\n");
+        printf("4. Aprroval\n");
+        printf("5. Exit\n");
         printf("Pilihan: ");scanf("%d", &choice);
 
         switch(choice){
@@ -885,7 +876,8 @@ int main(){
 
             case 3: cancel(&pala, &ini, &ekor, &head, &curr, &tail, &nr, &nv);
                 break;
-            case 4: exit = 0; break;
+            case 4: approval(&pala, &ini, &ekor, &head, &curr, &tail, &titik, &node, &code);break;
+            case 5: exit = 0; break;
 
         }
     }
