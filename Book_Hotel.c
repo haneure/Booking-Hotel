@@ -827,6 +827,13 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
     return 0;
 }
 
+void approval(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, struct bookr **titik, struct bookv **node, int *choice)
+{
+    struct Queue* temp = (struct Queue*)malloc(sizeof(struct Queue));
+    printf("Nama\t\t : %s\n", Queue->front->nama);
+    system("pause");
+}
+
 void SetColorAndBackground(int ForgC, int BackC)
 {
      WORD wColor = ((BackC & 0x0F) << 4) + (ForgC & 0x0F);
