@@ -45,6 +45,15 @@ struct bookr{
 
 }bookr;
 
+struct tree
+{
+    char kode[10];
+    struct tree *left;
+    struct tree *middle;
+    struct tree *right;
+};
+
+
 struct Queue{
     char nama[30];
     char stat[15];
@@ -129,8 +138,8 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
     int yearo = 0;
     int sama=0;
     //char codbook;
-    int pricer = 300000;
-    int pricev = 600000;
+    int pricer;
+    int pricev;
     char kodebook[10];
     int i;
     srand((unsigned int)(time(NULL)));
@@ -139,6 +148,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
     char stat[15];
     strcpy(stat, "Unapproved");
     int pilihan;
+    int tipe;
 
 
     printf("What do you want to do ?\n");
@@ -158,6 +168,25 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
 
             if(*choice==1)
             {
+                system("cls");
+                printf("Reguler");
+                printf("\nTambahan Fitur Kamar :");
+                printf("\n1. a,b,c (standard) = 300.000");
+                printf("\n2. a,b,c = 500.000");
+                printf("\n3. a,b,c = 700.000");
+                printf("\nPilihan : ");
+                scanf("%d", &tipe);
+                fflush(stdin);
+                if(tipe==1)
+                {
+                    pricer = 300000;
+                }else if(tipe==2)
+                {
+                    pricer = 500000;
+                }else if(tipe==3)
+                {
+                    pricer = 700000;
+                }
                 printf("\nNama\t\t\t:");                          //Input data
                 scanf("%[^\n]", &nama);
                 printf("No Kamar\t\t:");
@@ -216,7 +245,25 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
 
             else if(*choice==2)                                                     //Menu untuk ruang booking VIP
             {
+                system("cls");
+                printf("VIP");
+                printf("\nTambahan Fitur Kamar :");
+                printf("\n1. a,b,c (standard) = 1.000.000");
+                printf("\n2. a,b,c = 1.200.000");
+                printf("\n3. a,b,c = 1.400.000");
+                printf("\nPilihan : ");
+                scanf("%d", &tipe);
                 fflush(stdin);
+                if(tipe==1)
+                {
+                    pricev = 1000000;
+                }else if(tipe==2)
+                {
+                    pricev = 1200000;
+                }else if(tipe==3)
+                {
+                    pricev = 1400000;
+                }
                 printf("\nNama\t:");
                 scanf("%[^\n]", &nama);
                 fflush(stdin);
@@ -871,6 +918,46 @@ void SetColorAndBackground(int ForgC, int BackC)
     SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), wColor);
     return;
 }
+//------------------------insert tree----------------------------------
+int insert(struct tree **root, struct tree **current, struct tree *kodebook, int temp)
+{
+    struct tree *newnode = (struct tree*)malloc(sizeof(struct tree));
+    strcpy(newnode->kode, kodebook);
+    if(temp==1000000)
+    {
+        if((*current)->left = NULL)
+        {
+            (*current)->left = newnode;
+            return 0;
+        }else
+        {
+            (*current)=(*current)->left;
+            insert(root,current,kodebook,temp);
+        }
+    }else if(temp==1200000)
+    {
+        if((*current)->middle = NULL)
+        {
+            (*current)->middle = newnode;
+            return 0;
+        }else
+        {
+            (*current)=(*current)->middle;
+            insert(root,current,kodebook,temp);
+        }
+    }else if(temp==1400000)
+    {
+        if((*current)->right = NULL)
+        {
+            (*current)->right = newnode;
+            return 0;
+        }else
+        {
+            (*current)=(*current)->right;
+            insert(root,current,kodebook,temp);
+        }
+    }
+}
 
 int main(){
 
@@ -879,6 +966,7 @@ int main(){
     struct Queue *mae;                                  //Deklarasi variable queue
     struct Queue *queue = NULL;                         //Deklarasi variable queue sebagai NULL tiap kali program dibuka untuk pertama kali
     struct bookr *HashT[3];
+    struct tree *root, *current, *newnode;
 
     char nama[30];
     char kodebook[10];
@@ -1066,6 +1154,12 @@ int main(){
         */
 
 //----------------------File processing reading dari file.txt, untuk database VIP------------------------
+        struct tree *newnode = (struct tree*)malloc(sizeof(struct tree));
+        strcpy(newnode->kode, "headroot");
+        newnode->left = NULL;
+        newnode->middle = NULL;
+        newnode->right = NULL;
+        root=current=newnode;
         fp = fopen("Database VIP.txt", "r");
 
         if(fp != NULL){
@@ -1096,6 +1190,8 @@ int main(){
                     head->prev = tail;
                 }
                 sizev++;
+                int temp = price/durasi;
+                insert(&root, &current, kodebook, temp);
             }
         }
         else{
