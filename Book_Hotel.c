@@ -171,9 +171,9 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                 system("cls");
                 printf("Reguler");
                 printf("\nTambahan Fitur Kamar :");
-                printf("\n1. a,b,c (standard) = 300.000");
-                printf("\n2. a,b,c = 500.000");
-                printf("\n3. a,b,c = 700.000");
+                printf("\n1. Single Bed + Shower (standard) = 300.000");
+                printf("\n2. Twin Bed + Shower + TV (Standard) = 500.000");
+                printf("\n3. Double Bed + Shower + TV + Breakfast (Standard) = 700.000");
                 printf("\nPilihan : ");
                 scanf("%d", &tipe);
                 fflush(stdin);
@@ -248,9 +248,9 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                 system("cls");
                 printf("VIP");
                 printf("\nTambahan Fitur Kamar :");
-                printf("\n1. a,b,c (standard) = 1.000.000");
-                printf("\n2. a,b,c = 1.200.000");
-                printf("\n3. a,b,c = 1.400.000");
+                printf("\n1. Bathup + Twin Bed + TV + Breakfast(Superior) = 1.000.000");
+                printf("\n2. Bathup + Queen Bed + TV + Breakfast + Dinner (Superior) = 1.200.000");
+                printf("\n3. Bathup + King Bed + TV + Breakfast + Lunch + Dinner(Deluxe) = 1.400.000");
                 printf("\nPilihan : ");
                 scanf("%d", &tipe);
                 fflush(stdin);
@@ -923,9 +923,12 @@ int insert(struct tree **root, struct tree **current, struct tree *kodebook, int
 {
     struct tree *newnode = (struct tree*)malloc(sizeof(struct tree));
     strcpy(newnode->kode, kodebook);
+    newnode->left = NULL;
+    newnode->right = NULL;
+    newnode->middle = NULL;
     if(temp==1000000)
     {
-        if((*current)->left = NULL)
+        if((*current)->left == NULL)
         {
             (*current)->left = newnode;
             return 0;
@@ -936,7 +939,7 @@ int insert(struct tree **root, struct tree **current, struct tree *kodebook, int
         }
     }else if(temp==1200000)
     {
-        if((*current)->middle = NULL)
+        if((*current)->middle == NULL)
         {
             (*current)->middle = newnode;
             return 0;
@@ -947,7 +950,7 @@ int insert(struct tree **root, struct tree **current, struct tree *kodebook, int
         }
     }else if(temp==1400000)
     {
-        if((*current)->right = NULL)
+        if((*current)->right == NULL)
         {
             (*current)->right = newnode;
             return 0;
@@ -959,6 +962,15 @@ int insert(struct tree **root, struct tree **current, struct tree *kodebook, int
     }
 }
 
+void preorder(struct tree *pnode)
+{
+    if(pnode==NULL) return;
+    printf("\t%s",pnode->kode);
+    preorder(pnode->left);
+    preorder(pnode->middle);
+    preorder(pnode->right);
+}
+
 int main(){
 
     struct bookv *head, *node, *curr, *tail;            //Deklarasi variabel kedua struct
@@ -966,7 +978,7 @@ int main(){
     struct Queue *mae;                                  //Deklarasi variable queue
     struct Queue *queue = NULL;                         //Deklarasi variable queue sebagai NULL tiap kali program dibuka untuk pertama kali
     struct bookr *HashT[3];
-    struct tree *root, *current, *newnode;
+    struct tree *root, *current;
 
     char nama[30];
     char kodebook[10];
@@ -1154,12 +1166,13 @@ int main(){
         */
 
 //----------------------File processing reading dari file.txt, untuk database VIP------------------------
-        struct tree *newnode = (struct tree*)malloc(sizeof(struct tree));
-        strcpy(newnode->kode, "headroot");
-        newnode->left = NULL;
-        newnode->middle = NULL;
-        newnode->right = NULL;
-        root=current=newnode;
+        struct tree *current = (struct tree*)malloc(sizeof(struct tree));
+        strcpy(current->kode, "headroot");
+        current->left = NULL;
+        current->middle = NULL;
+        current->right = NULL;
+        root=current;
+
         fp = fopen("Database VIP.txt", "r");
 
         if(fp != NULL){
@@ -1191,13 +1204,18 @@ int main(){
                 }
                 sizev++;
                 int temp = price/durasi;
+                printf("\n%d\n", temp);
+                current=root;
                 insert(&root, &current, kodebook, temp);
+
             }
         }
         else{
             printf("Error, no file to read\n");
         }
+        preorder(root);
         fclose(fp);
+
 
         //--------------Cover--------------
 
@@ -1352,6 +1370,7 @@ int main(){
                     fclose(fp);
 
                     curr = head;
+                    int check;
                     do
                     {
                         system("cls");
@@ -1361,7 +1380,54 @@ int main(){
                         printf("Tanggal Peminjaman: %d,%d,%d\n",curr->date,curr->month,curr->year);
                         printf("Durasi: %d hari\n",curr->durasi);
                         printf("Price : Rp. %d\n", curr->price);
-                        printf("Menu:\n");
+                        printf("Fitur Kamar: ");
+                        current = root;
+                        check = 0;
+                        while(current->left!=NULL)
+                        {
+                            if(strcmp(curr->kodebook, current->left->kode)==0)
+                            {
+                                printf("\tBathup + Twin Bed + TV + Breakfast(Superior) = 1000000");
+                                check = 1;
+                                break;
+                            }else
+                            {
+                                current=current->left;
+                            }
+                        }
+                        if(check==0)
+                        {
+                            current = root;
+                            while(current->middle!=NULL)
+                            {
+                                if(strcmp(curr->kodebook, current->middle->kode)==0)
+                                {
+                                    printf("\tBathup + Queen Bed + TV + Breakfast + Dinner (Superior) = 1200000");
+                                    check=1;
+                                    break;
+                                }else
+                                {
+                                    current=current->middle;
+                                }
+                            }
+                        }
+                        if(check==0)
+                        {
+                            current = root;
+                            while(current->right!=NULL)
+                            {
+                                if(strcmp(curr->kodebook, current->right->kode)==0)
+                                {
+                                    printf("\tBathup + King Bed + TV + Breakfast + Lunch + Dinner(Deluxe) = 1400000");
+                                    check=1;
+                                    break;
+                                }else
+                                {
+                                    current=current->right;
+                                }
+                            }
+                        }
+                        printf("\nMenu:\n");
                         printf("1. Next\n");
                         printf("2. Previous\n");
                         printf("3. Show All\n");
@@ -1377,8 +1443,8 @@ int main(){
                             curr=curr->prev;                  // ke data sebelumnya
                         }
                         else if (flag==3){
-                            curr = head;
                             system("cls");
+                            current=root;
                             printf("=================================================================================================================\n");
                             printf("                                            Daftar Semua Kamar VIP                                               \n");
                             printf("=================================================================================================================\n");
@@ -1387,7 +1453,7 @@ int main(){
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
                             for(i = 0; i<sizer; i++){
                             printf("| %03d | %-30s  |     %d-%d-%d     |  %d hari  | Rp.%d |\n", curr->no, curr->nama, curr->date,curr->month,curr->year, curr->durasi, curr->price);
-                            curr = curr->next;
+                            curr=curr->next;
                             }
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
                             system("pause");
