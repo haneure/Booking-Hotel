@@ -343,7 +343,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                 printf("Menginap %d hari\n", (*mae)->durasi);
                 printf("Tanggal check in : %d-%d-%d\n", (*mae)->date, (*mae)->month, (*mae)->year);
                 printf("Biaya Penginapan : Rp.%d\n", (*mae)->price);
-                //printf("Kode booking     :%s\n", (*mae)->kodebook);
+                printf("Kode booking     :%s\n", (*mae)->kodebook);
                 //printf("Huruf pertama : %c", (*mae)->kodebook[0]);
                 printf("\n");
                 printf("Approve Pesanan ini?\n");
@@ -356,93 +356,93 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                     *mae = *queue;
                     system("pause");
                     if((*mae)->kodebook[0]=='V'){
-                            if(*head != NULL){
-                                *curr = *head;
-                                do{
-                                    if((*mae)->nokamar == (*curr)->no){
-                                        if((*mae)->date < (*curr)->dateo && (*mae)->date > (*curr)->date){
-                                            if((*mae)->month == (*curr)->montho){
-                                                if((*mae)->year == (*curr)->yearo){
-                                                    sama = 1;
-                                                    printf("sama = %d", sama);
-                                                    system("pause");
-                                                    *choice = 0;
-                                                }
+                        if(*head != NULL){
+                            *curr = *head;
+                            do{
+                                if((*mae)->nokamar == (*curr)->no){
+                                    if((*mae)->date < (*curr)->dateo && (*mae)->date > (*curr)->date){
+                                        if((*mae)->month == (*curr)->montho){
+                                            if((*mae)->year == (*curr)->yearo){
+                                                sama = 1;
+                                                printf("sama = %d", sama);
+                                                system("pause");
+                                                *choice = 0;
                                             }
                                         }
                                     }
-                                    *curr = (*curr)->next;
-                                }while(*curr != *head);
-                            }
-                            if(sama != 1){
-                                FILE *fp = fopen("Database VIP.txt", "a");                                      //ini File Processingnya
-                                fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*mae)->nama, (*mae)->nokamar, (*mae)->durasi, (*mae)->date, (*mae)->month, (*mae)->year, (*mae)->price, (*mae)->kodebook);
-                                fclose(fp);
-                                *node = (struct bookv*)malloc(sizeof(struct bookv));                            //Memory alloc struct bookv.
-                                strcpy((*node)->nama, (*mae)->nama);
-                                (*node)->no = (*mae)->nokamar;
-                                (*node)->durasi = (*mae)->durasi;
-                                (*node)->date = (*mae)->date;
-                                (*node)->month = (*mae)->month;
-                                (*node)->year = (*mae)->year;
-                                (*node)->prev = NULL;
-                                (*node)->next = NULL;
-                                (*node)->dateo = (*mae)->dateo;
-                                (*node)->montho = (*mae)->montho;
-                                (*node)->yearo = (*mae)->yearo;
-                                (*node) -> price = (*mae)->price;
-                                strcpy((*node)->kodebook , (*mae)->kodebook);
+                                }
+                                *curr = (*curr)->next;
+                            }while(*curr != *head);
+                        }
+                        if(sama != 1){
+                            FILE *fp = fopen("Database VIP.txt", "a");                                      //ini File Processingnya
+                            fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*mae)->nama, (*mae)->nokamar, (*mae)->durasi, (*mae)->date, (*mae)->month, (*mae)->year, (*mae)->price, (*mae)->kodebook);
+                            fclose(fp);
+                            *node = (struct bookv*)malloc(sizeof(struct bookv));                            //Memory alloc struct bookv.
+                            strcpy((*node)->nama, (*mae)->nama);
+                            (*node)->no = (*mae)->nokamar;
+                            (*node)->durasi = (*mae)->durasi;
+                            (*node)->date = (*mae)->date;
+                            (*node)->month = (*mae)->month;
+                            (*node)->year = (*mae)->year;
+                            (*node)->prev = NULL;
+                            (*node)->next = NULL;
+                            (*node)->dateo = (*mae)->dateo;
+                            (*node)->montho = (*mae)->montho;
+                            (*node)->yearo = (*mae)->yearo;
+                            (*node) -> price = (*mae)->price * (*mae)->durasi;
+                            strcpy((*node)->kodebook , (*mae)->kodebook);
 
-                                if(*head == NULL)
-                                {
-                                    *head = *node;
-                                    *tail = *node;
-                                }
-                                else
-                                {
-                                    (*tail)->next = *node;
-                                    (*node)->prev = *tail;
-                                    *tail = *node;
-                                }
-
-                                printf("Please wait . . . connecting to server\n");
-                                //Sleep(1000);
-                                printf("\nData peminjaman ruangan telah berhasil diinput dengan status Approved\n");
-                                printf("Harga kamar : Rp. %d\n\n", (*node)->price);
-                                printf("Mohon jangan lupa dengan Kode Boking anda, kode booking anda adalah: %s\n\n", (*node)->kodebook);
-                                dequeue(queue);
-                                *mae = *queue;
-                                int j = 1;
-                                printf("\nHasil dequeueh: \n\n");
-                                if(*queue != NULL){
-                                    while(*mae != NULL){
-                                        printf("Queue %d\n", j);
-                                        printf("%s\n", (*mae)->nama);
-                                        printf("%s\n", (*mae)->stat);
-                                        printf("%d\n", (*mae)->nokamar);
-                                        printf("%d hari\n", (*mae)->durasi);
-                                        printf("%d-%d-%d\n", (*mae)->date, (*mae)->month, (*mae)->year);
-                                        printf("Rp.%d\n", (*mae)->price);
-                                        printf("%s\n", (*mae)->kodebook);
-                                        printf("\n");
-                                        (*mae) = (*mae)->next;
-                                        j++;
-                                    }
-                                } else {
-                                    printf("Queue kosong\n");
-                                    system("pause");
-                                    break;
-                                }
-                                (*tail)->next = *head;
-                                (*head)->prev = *tail;
+                            if(*head == NULL)
+                            {
+                                *head = *node;
+                                *tail = *node;
                             }
                             else
                             {
-                                printf("Kamar sudah di reservasi oleh orang lain\n");
+                                (*tail)->next = *node;
+                                (*node)->prev = *tail;
+                                *tail = *node;
                             }
-                            *curr = (*head)->next;
 
-                            system("pause");
+                            printf("Please wait . . . connecting to server\n");
+                            //Sleep(1000);
+                            printf("\nData peminjaman ruangan telah berhasil diinput dengan status Approved\n");            //Prompt data ruangan succes dimasukkan ke database
+                            printf("Harga kamar : Rp. %d\n\n", (*node)->price);
+                            printf("Mohon jangan lupa dengan Kode Boking anda, kode booking anda adalah: %s\n\n", (*node)->kodebook);
+                            dequeue(queue);
+                            *mae = *queue;
+                            int j = 1;
+                            printf("\nHasil dequeue: \n\n");
+                            if(*queue != NULL){
+                                while(*mae != NULL){
+                                    printf("Queue %d\n", j);
+                                    printf("%s\n", (*mae)->nama);
+                                    printf("%s\n", (*mae)->stat);
+                                    printf("%d\n", (*mae)->nokamar);
+                                    printf("%d hari\n", (*mae)->durasi);
+                                    printf("%d-%d-%d\n", (*mae)->date, (*mae)->month, (*mae)->year);
+                                    printf("Rp.%d\n", (*mae)->price);
+                                    printf("%s\n", (*mae)->kodebook);
+                                    printf("\n");
+                                    (*mae) = (*mae)->next;
+                                    j++;
+                                }
+                            } else {
+                                printf("Queue kosong\n");
+                                system("pause");
+                                break;
+                            }
+                            (*tail)->next = *head;
+                            (*head)->prev = *tail;
+                        }
+                        else
+                        {
+                            printf("Kamar sudah di reservasi oleh orang lain\n");                   //Jika ada kamar yang bertabrakan tanggal pinjamnya
+                        }
+                        *curr = (*head)->next;
+                        *mae = *queue;
+                        system("pause");
                     }
                     else if((*mae)->kodebook[0]=='R'){
                             if(*pala != NULL){
@@ -478,7 +478,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                                 (*titik)->dateo = (*mae)->dateo;
                                 (*titik)->montho = (*mae)->montho;
                                 (*titik)->yearo = (*mae)->yearo;
-                                (*titik) -> price = (*mae)->price;
+                                (*titik) -> price = (*mae)->price * (*mae)->durasi;
                                 strcpy((*titik)->kodebook, (*mae)->kodebook);
 
                                 if(*pala == NULL)
@@ -500,7 +500,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                                 dequeue(queue);     // Dequeue setelah ditulis ke file
                                 *mae = *queue;
                                 int j = 1;
-                                //printf("\nHasil dequeueh: \n\n");
+                                printf("\nHasil dequeue: \n\n");
                                 if(*queue != NULL){
                                     while(*mae != NULL){
                                         printf("Queue %d\n", j);
@@ -518,7 +518,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
                                 } else{
                                     printf("Queue kosong\n");
                                     system("pause");
-                                    main();
+                                    break;
                                 }
                                 (*ekor)->next = *pala;
                                 (*pala)->prev = *ekor;
@@ -544,7 +544,7 @@ void userinput(struct bookr **pala, struct bookr **ini, struct bookr **ekor, str
     }
     else if (pilihan == 3)
     {
-        main();
+        return;
     }
 }
 
@@ -615,7 +615,7 @@ void swapv(struct bookv **a,struct bookv **b)                                   
 
 }
 
-int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, int sizer, int sizev)            //Fungsi untuk cancel ruangan
+int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct bookv **head, struct bookv **curr, struct bookv **tail, int *sizer, int *sizev)            //Fungsi untuk cancel ruangan
 {
     int pilihan;
     int pilihan2;
@@ -634,16 +634,10 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
     found = 0; //flag found
     if(pilihan==1) //tipe kamar reguler
     {
-
         system("cls");
         *ini = *pala; //agar proses looping dimulai dari data paling awal namun penanda data awal(head) tidak tergeser sama sekali
         while(1) //looping untuk menampilkan bookingan kamar hotel tipe reguler
         {
-            if(sizer == 0){
-                printf("Tidak ada kamar yang direservasi\n");
-                system("pause");
-                break;
-            }
             system("cls");
             printf("Nama\t\t\t: %s \n", (*ini)->nama);
             printf("No. Kamar\t\t: %d\n", (*ini)->no);
@@ -661,14 +655,10 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
             fflush(stdin);
             if(pilihan2==1)
             {
-                if(sizer > 1){
-                    *ini = (*ini)->next; //menggeser ini ke linked list setelahnya
-                }
+                *ini = (*ini)->next; //menggeser ini ke linked list setelahnya
             }else if(pilihan2==2)
             {
-                if(sizer > 1){
-                    *ini = (*ini)->prev; //menggeser ini ke linked list sebelumnya
-                }
+                *ini = (*ini)->prev; //menggeser ini ke linked list sebelumnya
             }else if(pilihan2==3)
             {
                 printf("Anda yakin ingin menghapus bookingan kamar hotel tipe reguler untuk kamar &d ?(y/n)\n", (*ini)->no);
@@ -683,12 +673,8 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     //ini = pala;
                     if(strcmp((*ini)->kodebook, password)== 0) //Pengecekan kode booking untuk membatalkan booking agar yang bisa membatalkan hanya yang memesan
                     {
+
                         fp = fopen("Database Reguler.txt", "w");
-                        if(sizer == 1){
-                            printf("Kamar berhasil dihapus!\n");
-                            system("pause");
-                            main();
-                        }
                         struct bookr *temp = (*ini);
                         (*ini) = (*ini)->next;
 
@@ -711,6 +697,8 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                         system("pause");
                         break;
                     }
+                }else{
+                    break;
                 }
             }else if(pilihan2==4){
                 while(1){
@@ -727,7 +715,7 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     if(srcchoice == 1){
                         printf("Masukkan nama yang ingin dicari: "); fflush(stdin); scanf("%[^\n]", keynama);
                         (*ini) = (*pala);
-                        for(i = 0; i < sizer ; i++){
+                        for(i = 0; i < *sizer ; i++){
                             if(strcmp((*ini)->nama, keynama)==0){
                                 found = 1;
                                 break;
@@ -747,37 +735,23 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                             scanf("%c", &pilihan3);
                             fflush(stdin);
                             if(pilihan3=='Y' || pilihan3=='y'){
-                                printf("Masukkan kode booking anda sebagai sistem pengaman: ");
-                                printf("\ncheat code: %s\n", (*ini)->kodebook);
-                                scanf("%s", &password);
-                                if(strcmp((*ini)->kodebook, password)== 0){
-                                    fp = fopen("Database Reguler.txt", "w");
-                                    if(sizer == 1){
-                                        printf("Kamar berhasil dihapus!\n");
-                                        system("pause");
-                                        main();
-                                    }
-                                    struct bookr *temp = (*ini);
-                                    (*ini) = (*ini)->next;
+                                fp = fopen("Database Reguler.txt", "w");
+                                struct bookr *temp = (*ini);
+                                (*ini) = (*ini)->next;
 
-                                    while((*ini) != temp){
-                                        if(strcmp(temp->nama, (*ini)->nama) == 0){                          //proses delete dari database.txt
-                                            (*ini) = (*ini);                                                // jika nama sama, maka diskip
-                                        } else{
-                                            fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*ini)->nama, (*ini)->no, (*ini)->durasi, (*ini)->date, (*ini)->month, (*ini)->year, (*ini)->price, (*ini)->kodebook);  //jika nama berbeda, maka ditulis di database.txt
-                                        }
-                                        (*ini) = (*ini)->next;
+                                while((*ini) != temp){
+                                    if(strcmp(temp->nama, (*ini)->nama) == 0){                          //proses delete dari database.txt
+                                        (*ini) = (*ini);                                                // jika nama sama, maka diskip
+                                    } else{
+                                        fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*ini)->nama, (*ini)->no, (*ini)->durasi, (*ini)->date, (*ini)->month, (*ini)->year, (*ini)->price, (*ini)->kodebook);  //jika nama berbeda, maka ditulis di database.txt
                                     }
-                                    fclose(fp);
-                                    printf("Kamar berhasil dihapus!\n");
-                                    //*sizer--;
-                                    system("pause");
-                                    break;
-                                }else{
-                                    printf("Kode booking yang anda masukkan salah\n");
-                                    system("pause");
-                                    break;
+                                    (*ini) = (*ini)->next;
                                 }
+                                fclose(fp);
+                                printf("Kamar berhasil dihapus!\n");
+                                //*sizer--;
+                                system("pause");
+                                break;
                             }
                         }else if (found == 0){
                             printf("Kamar dengan kode booking tersebut tidak ditemukan\n");
@@ -788,7 +762,7 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     } else if (srcchoice == 2){
                         (*ini) = (*pala);
                         printf("\nMasukkan kode booking kamar yang ingin anda cari: "); scanf("%s", &password);
-                        for(i = 0; i < sizer; i++){
+                        for(i = 0; i < *sizer; i++){
                             if(strcmp((*ini)->kodebook, password)== 0){ //Pengecekan kode booking untuk membatalkan bookingan, yang bisa membatalkan hanya yang memesan yang mengetahui kode bookingnya sendiiri
                                 found = 1;
                                 break;
@@ -797,7 +771,7 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                             }
                         }
                         if (found == 1){
-                            system("cls");
+                            //system("cls");
                             printf("Nama\t\t\t: %s \n", (*ini)->nama);
                             printf("No. Kamar\t\t: %d\n", (*ini)->no);
                             printf("Lama Menginap\t\t: %d\n", (*ini)->durasi);
@@ -810,11 +784,6 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                             fflush(stdin);
                             if(pilihan3=='Y' || pilihan3=='y'){
                                 fp = fopen("Database Reguler.txt", "w");
-                                if(sizer == 1){
-                                    printf("Kamar berhasil dihapus!\n");
-                                    system("pause");
-                                    main();
-                                }
                                 struct bookr *temp = (*ini);
                                 (*ini) = (*ini)->next;
 
@@ -832,6 +801,8 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                                 system("pause");
                                 break;
 
+                            }else{
+                                break;
                             }
                         } else if (found == 0){
                             printf("Kamar dengan kode booking tersebut tidak ditemukan\n");
@@ -840,23 +811,19 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                             break;
                         }
                     } else if (srcchoice == 3){
-                        main();
+                        break;
                     }
                 }
             } else if(pilihan2 == 5){
-                main();
+                break;
             }
             //system("pause");
         }
     }else{ //tipe kamar VIP
+        system("cls");
         *curr = *head;
         while(1) //looping untuk menampilkan bookingan kamar hotel tipe VIP
         {
-            if(sizev == 0){
-                printf("Tidak ada kamar yang direservasi\n");
-                system("pause");
-                break;
-            }
             system("cls");
             printf("Nama\t: %s \n", (*curr)->nama);
             printf("No. Kamar\t: %d\n", (*curr)->no);
@@ -873,14 +840,10 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
             scanf("%d", &pilihan2);
             if(pilihan2==1)
             {
-                if(sizev > 1){
-                    *curr = (*curr)->next;      //menggeser curr ke linked list setelahnya
-                }
+                *curr = (*curr)->next;      //menggeser curr ke linked list setelahnya
             }else if(pilihan2==2)
             {
-                if(sizev > 1){
-                    *curr = (*curr)->prev;      //menggeser curr ke linked list sebelumnya
-                }
+                *curr = (*curr)->prev;      //menggeser curr ke linked list sebelumnya
             }else if(pilihan2==3)
             {
                 printf("Anda yakin ingin menghapus bookingan kamar hotel tipe VIP untuk kamar %d ?(y/n)\n", (*curr)->no);
@@ -892,18 +855,12 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     printf("Masukkan kode booking anda sebagai sistem pengaman: ");
                     //printf("\ncheat code: %s\n", (*curr)->kodebook);
                     scanf("%s", &password);fflush(stdin);
-
                     if(strcmp((*curr)->kodebook, password)== 0)    //Pengecekan kode booking untuk membatalkan bookingan, yang bisa membatalkan hanya yang memesan yang mengetahui kode bookingnya sendiiri
                     {
                         //FILE *fp;
                         fp = fopen ("Database VIP.txt", "w");
-                        if(sizev == 1){
-                            printf("Kamar berhasil dihapus!\n");
-                            system("pause");
-                            main();
-                        }
                         struct bookv *temp = (*curr);
-                        for(i = 0; i < sizev; i++){
+                        for(i = 0; i < *sizev; i++){
                             if(strcmp(temp->nama,(*curr)->nama) == 0){
                                 (*curr) = (*curr);
                             } else{
@@ -922,8 +879,10 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                         system("pause");
                         break;
                     }
+                }else{
+                    break;
                 }
-            }else if(pilihan2==4){
+            }else if(pilihan2==4){                  //searching kamar
                 while(1){
                     int srcchoice;
                     char srcpilihan;
@@ -938,7 +897,7 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     if(srcchoice == 1){                                                                             //search berdasarkan nama pemesan
                         printf("Masukkan nama yang ingin dicari: "); fflush(stdin); scanf("%[^\n]", keynama);
                         (*curr) = (*head);
-                        for(i = 0; i < sizev ; i++){
+                        for(i = 0; i < *sizev ; i++){
                             if(strcmp((*curr)->nama, keynama)==0){
                                 found = 1;
                                 break;
@@ -953,42 +912,28 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                             printf("Tanggal Check In\t: %d-%d-%d\n", (*curr)->date, (*curr)->month, (*curr)->year);
                             printf("Status\t\t\t: Approved\n");
                             printf("Price\t\t\t: %d\n", (*curr)->price);
-                            printf("Anda yakin ingin menghapus bookingan kamar hotel tipe reguler untuk kamar %d ?(y/n)\n", (*curr)->no);
+                            printf("Anda yakin ingin menghapus bookingan kamar hotel tipe reguler untuk kamar %d ?(y/n)\n", (*curr)->no);       //konfirmasi user untuk menghapus
                             printf("Pilihan: "); fflush(stdin);
                             scanf("%c", &pilihan3);
                             fflush(stdin);
                             if(pilihan3=='Y' || pilihan3=='y'){
-                                 printf("Masukkan kode booking anda sebagai sistem pengaman: ");
-                                //printf("\ncheat code: %s\n", (*curr)->kodebook);
-                                scanf("%s", &password);fflush(stdin);
-                                if(strcmp((*curr)->kodebook, password)== 0){
-                                    fp = fopen("Database VIP.txt", "w");
-                                    if(sizev == 1){
-                                        printf("Kamar berhasil dihapus!\n");
-                                        system("pause");
-                                        main();
-                                    }
-                                    struct bookv *temp = (*curr);
-                                    (*curr) = (*curr)->next;
+                                fp = fopen("Database VIP.txt", "w");
+                                struct bookv *temp = (*curr);
+                                (*curr) = (*curr)->next;
 
-                                    while((*curr) != temp){
-                                        if(strcmp(temp->nama, (*curr)->nama) == 0){
-                                            (*curr) = (*curr);
-                                        } else{
-                                            fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*curr)->nama, (*curr)->no, (*curr)->durasi, (*curr)->date, (*curr)->month, (*curr)->year, (*curr)->price, (*curr)->kodebook);
-                                        }
-                                        (*curr) = (*curr)->next;
+                                while((*curr) != temp){
+                                    if(strcmp(temp->nama, (*curr)->nama) == 0){
+                                        (*curr) = (*curr);
+                                    } else{
+                                        fprintf(fp, "%s#%d#%d#%d-%d-%d-Rp.%d-%s\n", (*curr)->nama, (*curr)->no, (*curr)->durasi, (*curr)->date, (*curr)->month, (*curr)->year, (*curr)->price, (*curr)->kodebook);
                                     }
-                                    fclose(fp);
-                                    printf("Kamar berhasil dihapus!\n");
-                                    //*sizer--;
-                                    system("pause");
-                                    break;
-                                }else{
-                                    printf("Kode booking yang anda masukkan salah\n");
-                                    system("pause");
-                                    break;
+                                    (*curr) = (*curr)->next;
                                 }
+                                fclose(fp);
+                                printf("Kamar berhasil dihapus!\n");
+                                //*sizer--;
+                                system("pause");
+                                break;
                             }
                         }else if (found == 0){
                             printf("Kamar dengan kode booking tersebut tidak ditemukan\n");
@@ -999,7 +944,7 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     } else if (srcchoice == 2){                                                                         // search berdasarkan kode booking
                         (*curr) = (*head);
                         printf("\nMasukkan kode booking kamar yang ingin anda cari: "); scanf("%s", &password);
-                        for(i = 0; i < sizev; i++){
+                        for(i = 0; i < *sizev; i++){
                             if(strcmp((*curr)->kodebook, password)== 0){ //Pengecekan kode booking untuk membatalkan booking. Jadi yang hanya bisa membatalkan hanya pemesan itu sendiri yang mengetahui kode bookingnya
                                 found = 1;
                                 break;
@@ -1021,11 +966,6 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                             fflush(stdin);
                             if(pilihan3=='Y' || pilihan3=='y'){
                                 fp = fopen("Database VIP.txt", "w");
-                                if(sizev == 1){
-                                    printf("Kamar berhasil dihapus!\n");
-                                    system("pause");
-                                    main();
-                                }
                                 struct bookv *temp = (*curr);
                                 (*curr) = (*curr)->next;
 
@@ -1043,6 +983,8 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                                 system("pause");
                                 break;
 
+                            }else{
+                                break;
                             }
                         } else if (found == 0){
                             printf("Kamar dengan kode booking tersebut tidak ditemukan\n");
@@ -1055,13 +997,14 @@ int cancel(struct bookr **pala, struct bookr **ini, struct bookr **ekor, struct 
                     }
                 }
             } else if( pilihan2 == 5){
-                main();
+                break;
             }
         }
     }
     return 0;
 }
 
+//----------fungsi insert ke Hash Table------------
 void insertToChain(char nama[],int nokamar,int durasi,int date,int month, int year, int price, char kodebook[], struct bookr **hash)
 {
     struct bookr *ptr = (*hash);
@@ -1146,7 +1089,7 @@ int main(){
     struct bookv *head, *node, *curr, *tail;            //Deklarasi variabel kedua struct
     struct bookr *pala, *titik, *ini, *ekor;
     struct Queue *mae;                                  //Deklarasi variable queue
-    struct Queue *queue = NULL;                         //Deklarasi variable queue sebagai NULL tiap kali program dibuka untuk pertama kali
+    struct Queue *queue = NULL;                         //Deklarasi variable queue sebagai NULL tiap kali program dibuka untuk pertama kali, dan mae sebagai pointer untuk queue
     struct bookr *HashT[3];
     struct tree *root, current;
 
@@ -1214,6 +1157,7 @@ int main(){
                 if(feof(fp)){
                     break;
                 }
+                sizer++;
                 fflush(stdin);
                 titik = (struct bookr*)malloc(sizeof(struct bookr));
                 strcpy(titik->nama, nama);
@@ -1239,13 +1183,13 @@ int main(){
                     ekor->next = pala;
                     pala->prev = ekor;
                 }
-                sizer++;
             }
         }
         else{                                       //error handling
             printf("Error, no file to read\n");
         }
         fclose(fp);
+
 
         //-----------------Hashing Kamar Reguler-----------------
 
@@ -1254,32 +1198,33 @@ int main(){
         }
 
         ini = pala;
-        for(i = 0; i < sizer; i++){
-            char tempName[100];
-            int tempNo;
-            int tempDurasi;
-            int tempDate;
-            int tempMonth;
-            int tempYear;
-            int tempPrice;
-            char tempKodebook[50];
-            strcpy(tempName, ini->nama);
-            tempNo = ini->no;
-            tempDurasi = ini->durasi;
-            tempDate = ini->date;
-            tempMonth = ini->month;
-            tempYear = ini->year;
-            tempPrice = ini->price;
-            strcpy(tempKodebook, ini->kodebook);
-            //printf("%d %s", ini->price, durasi);
-            if(ini->price / durasi == 300000){                                                                                      //Data dimasukkan sesuai tipe range harga 300k,500k,800k
-                insertToChain(tempName, tempNo, tempDurasi, tempDate, tempMonth, tempYear, tempPrice, tempKodebook, &HashT[0]);     //tipe 1 300k
-            } else if (ini->price / durasi == 500000){
-                insertToChain(tempName, tempNo, tempDurasi, tempDate, tempMonth, tempYear, tempPrice, tempKodebook, &HashT[1]);     //tipe 2 500k
-            } else if (ini->price / durasi == 700000){
-                insertToChain(tempName, tempNo, tempDurasi, tempDate, tempMonth, tempYear, tempPrice, tempKodebook, &HashT[2]);     //tipe 3 800k
+        if(sizer >= 1){
+            for(i = 0; i < sizer; i++){
+                char tempName[100];
+                int tempNo;
+                int tempDurasi;
+                int tempDate;
+                int tempMonth;
+                int tempYear;
+                int tempPrice;
+                char tempKodebook[50];
+                strcpy(tempName, ini->nama);
+                tempNo = ini->no;
+                tempDurasi = ini->durasi;
+                tempDate = ini->date;
+                tempMonth = ini->month;
+                tempYear = ini->year;
+                tempPrice = ini->price;
+                strcpy(tempKodebook, ini->kodebook);
+                if(ini->price / ini->durasi == 300000){                                                                                      //Data dimasukkan sesuai tipe range harga 300k,500k,800k
+                    insertToChain(tempName, tempNo, tempDurasi, tempDate, tempMonth, tempYear, tempPrice, tempKodebook, &HashT[0]);     //tipe 1 300k
+                } else if (ini->price / ini->durasi == 500000){
+                    insertToChain(tempName, tempNo, tempDurasi, tempDate, tempMonth, tempYear, tempPrice, tempKodebook, &HashT[1]);     //tipe 2 500k
+                } else if (ini->price / ini->durasi == 700000){
+                    insertToChain(tempName, tempNo, tempDurasi, tempDate, tempMonth, tempYear, tempPrice, tempKodebook, &HashT[2]);     //tipe 3 800k
+                }
+                ini = ini -> next;
             }
-            ini = ini -> next;
         }
 
         //ini untuk check apakah sudah masuk hash table dengan benar atau belum
@@ -1303,7 +1248,7 @@ int main(){
         i=0;
         struct bookr *ptr2 = HashT[1];
         printf("================================================\n");
-        printf("    Kamar Reguler tipe 1 (Rp. 500.000/malam)   \n");
+        printf("    Kamar Reguler tipe 2 (Rp. 500.000/malam)   \n");
         printf("================================================\n");
         if(ptr2 != NULL){
             while(ptr2 != NULL){
@@ -1352,6 +1297,7 @@ int main(){
                 if(feof(fp)){
                     break;
                 }
+                sizev++;
                 fflush(stdin);
                 node = (struct bookv*)malloc(sizeof(struct bookv));
                 strcpy(node->nama, nama);
@@ -1377,19 +1323,23 @@ int main(){
                     tail->next = head;
                     head->prev = tail;
                 }
-                sizev++;
-                int temp = price/durasi;
-                //printf("\n%d\n", temp);
-                current=root;
-                insert(&root, &current, kodebook, temp);
 
+                if(sizev >= 1){
+                    int temp = price/durasi;
+                    //printf("\n%d\n", temp);
+                    current=root;
+                    insert(&root, &current, kodebook, temp);
+                }
             }
         }
         else{
             printf("Error, no file to read\n");
+            system("pause");
+            return 1;
         }
         //preorder(root);
         fclose(fp);
+
 
         //--------------Cover--------------
         system("cls");
@@ -1428,7 +1378,7 @@ int main(){
         printf("Fasilitas: Single Bed + Shower (Standard) + Breakfast\n");
         printf("Tipe 2: Rp. 500.000 / hari\n");
         printf("Fasilitas: Twin Bed + Shower + TV (Standard) + Breakfast + Brunch\n");
-        printf("Tipe 3: Rp. 700.000 / hari\n");
+        printf("Tipe 3: Rp. 800.000 / hari\n");
         printf("Fasilitas: Double Bed + Shower + TV (Standard) + Breakfast + Lunch + Dinner\n\n");
 
         ini = pala;
@@ -1438,10 +1388,6 @@ int main(){
             {
                 printf("No. Kamar\t\t: %d sudah dipesan\n", ini->no);                                       //Untuk menampilkan kamar mana saja yang sudah dipesan.
                 ini = ini->next;
-                if(i >= 7){
-                    printf("\t\t\t  etc.\n\n");
-                    break;
-                }
             }
         }else{
             printf("All Reguler Room avaiable\n");
@@ -1453,10 +1399,6 @@ int main(){
             for(i = 0; i < sizev; i++){
                 printf("No. Kamar\t\t: %d sudah dipesan\n", curr->no);
                 curr = curr->next;
-                if(i >= 7){
-                    printf("\t\t\t  etc.\n");
-                    break;
-                }
             }
         }else{
             printf("All VIP Room Avaiable\n");
@@ -1490,17 +1432,18 @@ int main(){
                     if(sizer == 0){
                         printf("Tidak ada kamar yang direservasi\n");
                         system("pause");
-                        main();
+                        break;
                     }
                     do
                     {
                         cek = 0;
                         titik = pala; //sebagai awal pengecekan dalam sorting
-                        while(titik->next != ini || cek == 0)      // jadi selama titik -> next tidak sama dengan pala, artinya looping terus berlanjut.
+                        while(titik->next != ini)      // jadi selama titik -> next tidak sama dengan pala, artinya looping terus berlanjut.
                         {
                             if(sizer <= 1){
                                 break;
-                            }else if(titik->no > titik->next->no) //untuk sorting urut nomor kamar.
+                            }
+                            else if(titik->no > titik->next->no) //untuk sorting urut nomor kamar.
                             {
                                 swapr(&titik,&titik->next);
                                 cek = 1;
@@ -1534,7 +1477,6 @@ int main(){
                         printf("Durasi: %d hari\n",ini->durasi);
                         printf("Price : Rp. %d\n", ini->price);
                         //printf("kode book: %s\n", ini->kodebook);
-
                         printf("Fitur kamar: \n");
                         if(ptr != NULL && fitur == 0){
                             while(ptr != NULL){
@@ -1581,14 +1523,12 @@ int main(){
                             if(sizer > 1){
                                 ini=ini->next;                  // ke data selanjutnya
                             }
-
                         }
                         else if (flag==2)
                         {
                             if(sizer > 1){
                                 ini=ini->prev;                  // ke data sebelumnya
                             }
-
                         }
                         else if (flag==3){                  //tampilkan semua data
                             ini = pala;
@@ -1597,10 +1537,10 @@ int main(){
                             printf("                                        Daftar Semua Kamar Reguler                                               \n");
                             printf("=================================================================================================================\n");
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
-                            printf("| No  |\t\t\tNama\t\t| Tanggal Peminjaman |\tDurasi\t|   Harga   |\n");
+                            printf("| No  |\t\t\tNama\t\t| Tanggal Peminjaman |\tDurasi\t|    Harga    |\n");
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
                             for(i = 0; i<sizer; i++){
-                                printf("| %03d | %-30s  |     %d-%d-%d     |  %d hari  | Rp.%d |\n", ini->no, ini->nama, ini->date,ini->month,ini->year, ini->durasi, ini->price);
+                                printf("| %03d | %-30s  |     %2d-%2d-%2d     |  %d hari  | Rp.%-8d |\n", ini->no, ini->nama, ini->date,ini->month,ini->year, ini->durasi, ini->price);
                                 if(sizer > 1){
                                     ini = ini->next;
                                 }
@@ -1608,7 +1548,7 @@ int main(){
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
                             system("pause");
                         } else if (flag == 4){
-                            main();
+                            break;
                         }
                     }while(1);
                     system("cls");
@@ -1618,7 +1558,7 @@ int main(){
                     if(sizev == 0){
                         printf("Tidak ada kamar yang direservasi\n");
                         system("pause");
-                        main();
+                        break;
                     }
                     do
                     {
@@ -1628,7 +1568,8 @@ int main(){
                         {
                             if(sizev <= 1){
                                 break;
-                            } else if(node->no > node->next->no) //untuk sorting urut nomor kamar.
+                            }
+                            else if(node->no > node->next->no) //untuk sorting urut nomor kamar.
                             {
                                 swapv(&node,&node->next);
                                 cek = 1;
@@ -1730,18 +1671,18 @@ int main(){
                             printf("                                            Daftar Semua Kamar VIP                                               \n");
                             printf("=================================================================================================================\n");
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
-                            printf("| No  |\t\t\tNama\t\t| Tanggal Peminjaman |\tDurasi\t|   Harga   |\n");
+                            printf("| No  |\t\t\tNama\t\t| Tanggal Peminjaman |\tDurasi\t|    Harga    |\n");
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
-                            for(i = 0; i<sizev; i++){
-                                printf("| %03d | %-30s  |     %d-%d-%d     |  %d hari  | Rp.%d |\n", curr->no, curr->nama, curr->date,curr->month,curr->year, curr->durasi, curr->price);
+                            for(i = 0; i<sizer; i++){
+                                printf("| %03d | %-30s  |     %2d-%2d-%2d     |  %d hari  | Rp.%-8d |\n", curr->no, curr->nama, curr->date,curr->month,curr->year, curr->durasi, curr->price);
                                 if(sizev > 1){
                                     curr=curr->next;
                                 }
                             }
                             printf("-----------------------------------------------------------------------------------------------------------------\n");
                             system("pause");
-                        } else if (flag == 4){
-                            main();
+                        } else if ( flag == 4){
+                            break;
                         }
                     }while(1);
                     system("cls");
@@ -1749,7 +1690,7 @@ int main(){
                 break;
             case 3:
 //-------------------------------Delete-----------------------------
-                cancel(&pala, &ini, &ekor, &head, &curr, &tail, sizer, sizev);
+                cancel(&pala, &ini, &ekor, &head, &curr, &tail, &sizer, &sizev);
                 break;
             case 4:
 //----------------------------Search-----------------------------------
@@ -1760,15 +1701,15 @@ int main(){
                     system("cls");
                     printf("Menu Cari kamar\n");                              //Linear Search berdasarkan nama dan nomor kamar
                     printf("1. Cari berdasarkan nama\n");
-                    printf("2. Cari berdasarkan nomor\n");
+                    printf("2. Cari berdasarkan nomor kamar\n");
                     printf("3. Exit\n");
                     printf("Pilihan: "); scanf("%d", &srcchoice);
-                    if(srcchoice == 1){     //search berdasarkan nama pemesan
+                    if(srcchoice == 1){                                             //search berdasarkan nama pemesan
                         printf("Masukkan nama yang ingin dicari: "); fflush(stdin); scanf("%[^\n]", keynama);
                         ini = pala;
                         for(i = 0; i < sizer ; i++){
                             if(strcmp(ini->nama, keynama)==0){
-                                printf("\nKamar Reguler\n");                                                  //print data yang sudah disearch.
+                                printf("\nKamar Reguler\n");                                                  //tiap ada data yang sesuai keynama, print data tersebut.
                                 printf("Nomor: %d\n",ini->no);
                                 printf("Nama: %s\n",ini->nama);
                                 printf("Tanggal Peminjaman: %d-%d-%d\n",ini->date,ini->month,ini->year);
@@ -1792,21 +1733,7 @@ int main(){
                             }
                             curr = curr->next;
                         }
-                        fflush(stdin);
-                        if(found == 0){
-                            printf("Kamar tidak ditemukan!\n");
-                            system("pause");
-                            break;
-                        } else
-                        printf("\nIngin pergi ke menu cancel? (y/n)\n");
-                        scanf("%c", &srcpilihan);
-                        if(srcpilihan=='Y' || srcpilihan=='y'){
-                            cancel(&pala, &ini, &ekor, &head, &curr, &tail, sizer, sizev);
-                        } else{
-                            main();
-                        }
-                        system("pause");
-                    } else if (srcchoice == 2){         //search berdasarkan nomor kamar
+                    } else if (srcchoice == 2){                                     //search berdasarkan nomor kamar
                         printf("Masukkan nomor kamar yang ingin dicari: "); fflush(stdin); scanf("%d", &keyno);
                         ini = pala;
                         for(i = 0; i < sizer ; i++){
@@ -1835,29 +1762,29 @@ int main(){
                             }
                             curr = curr->next;
                         }
-                        fflush(stdin);
-                        if(found == 0){
-                            printf("Kamar tidak ditemukan!\n");
-                            system("pause");
-                            break;
-                        } else
-                        printf("\nIngin pergi ke menu cancel? (y/n)\n");
-                        scanf("%c", &srcpilihan);
-                        if(srcpilihan=='Y' || srcpilihan=='y'){
-                            cancel(&pala, &ini, &ekor, &head, &curr, &tail, sizer, sizev);
-                        } else{
-                            main();
-                        }
-                        system("pause");
                     } else if(srcchoice == 3){
-                        main();
+                        break;
                     }
-
+                    fflush(stdin);
+                    if(found == 0){
+                        printf("Kamar tidak ditemukan!\n");
+                        system("pause");
+                        break;
+                    } else
+                    printf("\nIngin pergi ke menu cancel? (y/n)\n");        //prompt untuk pergi ke menu cancel
+                    scanf("%c", &srcpilihan);
+                    if(srcpilihan=='Y' || srcpilihan=='y'){
+                        cancel(&pala, &ini, &ekor, &head, &curr, &tail, &sizer, &sizev);
+                    } else{
+                        break;
+                    }
+                    system("pause");
                 }
-            case 5: exit = 0; return 1;
+            case 5: exit = 0; return 1;                 //program return 1; atau selesai
 
         }
     }
 
     return 0;
 }
+
